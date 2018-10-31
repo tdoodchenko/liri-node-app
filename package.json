@@ -2,7 +2,7 @@
   "name": "liri-node-app",
   "version": "1.0.0",
   "description": "Liri Node app assignment",
-  "main": "index.js",
+  "main": "keys.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/tdoodchenko/liri-node-app/issues"
   },
-  "homepage": "https://github.com/tdoodchenko/liri-node-app#readme"
+  "homepage": "https://github.com/tdoodchenko/liri-node-app#readme",
+  "dependencies": {
+    "bandsintown": "^1.0.1",
+    "dotenv": "^6.1.0",
+    "node-spotify-api": "^1.0.7"
+  }
 }
