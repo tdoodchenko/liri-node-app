@@ -25,10 +25,6 @@ switch(command) {
   concertThis(); 
   break;
 
-  default: console.log("\r\n" +"To use LIRI, you can type in the following commands after 'node liri.js'." + "\n" + "If the song or movie name has more than one word, put the name in quotation marks." + "\n" + "For example, node liri.js spotify-this-song 'all hands on the bad one'" +"\r\n"+
-  			"2. spotify-this-song 'any song name' "+"\r\n"+
-  			"3. movie-this 'any movie name' "+"\r\n"+
-  			"4. do-what-it-says."+"\r\n");
   };
 
 function spotifyThisSong() {
