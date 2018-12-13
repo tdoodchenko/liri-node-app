@@ -1,59 +1,103 @@
 require("dotenv").config();
 
-var keys = require("./key");
+var keys = require("./keys");
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotify);
+var request = require("request");
+var moment = require('moment');
 
 
 
 var command = process.argv[2];
 var search = process.argv[3];
 
-spotify.search({ type: 'track', query: command }, function(err, data) {
-    if (err) {
-      return console.log('Error occurred: ' + err);
+
+switch(command) {
+  case "spotify-this-song": 
+  spotifyThisSong(); 
+  break;
+  
+  case "movie-this": 
+  movieThis(); 
+  break;
+      
+  case "concert-this": 
+  concertThis(); 
+  break;
+
+  default: console.log("\r\n" +"To use LIRI, you can type in the following commands after 'node liri.js'." + "\n" + "If the song or movie name has more than one word, put the name in quotation marks." + "\n" + "For example, node liri.js spotify-this-song 'all hands on the bad one'" +"\r\n"+
+  			"2. spotify-this-song 'any song name' "+"\r\n"+
+  			"3. movie-this 'any movie name' "+"\r\n"+
+  			"4. do-what-it-says."+"\r\n");
+  };
+
+function spotifyThisSong() {
+    	if (search == null) {
+    		return console.log("Artist: Ace of Base \nSong: 'The Sign' \nAlbum: 'Greatest Hits' \nPreview Link: 'https://open.spotify.com/track/3DYVWvPh3kGwPasp7yjahc'");
+    	}
+    	params = search;
+    	spotify.search({ type: "track", query: params }, function(err, data) {
+            if(!err){
+    			var songInfo = data.tracks.items;
+    			for (var i = 0; i < 10; i++) {
+    			 	if (songInfo[i] != undefined) {
+    			 		var spotifyResults =
+    			 		"Artist: " + songInfo[i].artists[0].name + "\r\n" +
+    			 		"Song: " + songInfo[i].name + "\r\n" +
+    			 		"Album: " + songInfo[i].album.name + "\r\n" +
+    			 		"Preview Link: " + songInfo[i].preview_url + "\r\n" + 
+                        "     ----------------------------------       ------------------------------------               " + "\r\n";
+    			 		console.log(spotifyResults);
+    			 	}
+    			}
+    		}	else {
+    			console.log("Error :"+ err);
+    			return;
+    			}
+    	});
     }
-  
-    
 
-  var artists = data.tracks.items[0].album.artists;
-  
-  
+function concertThis() {
+if (search == null) {
+  return console.log("No band was entered")
+}
+request("https://rest.bandsintown.com/artists/" + search + "/events?app_id=codingbootcamp", function (error, response, body) {
 
-  for (var i=0; i< data.tracks.items.length; i++) {
-    // console.log(artists[i].name);
-    console.log(data.tracks.items[i].name)
-    console.log(data.tracks.items[i].album.artists[0].name)
-    console.log(data.tracks.items[i].album.release_date)
+  if (!error && response.statusCode === 200) {
+      var objectBody = JSON.parse(body);
+      for (i = 0; i < objectBody.length; i++) {
+          console.log("Venue: " + objectBody[i].venue.name);
+          console.log("City: " + objectBody[i].venue.city + ", " + objectBody[i].venue.country);
+          console.log(moment(objectBody[i].datetime).format("MM/DD/YY"));
+      }
+  } else {
+      console.log(error);
   }
+});
+}
 
+function movieThis() {
+  request("http://www.omdbapi.com/?t=" + search + "&y=&plot=short&apikey=trilogy", function(error, response, body) {
+
+if (!error && response.statusCode === 200 && search != undefined) {
+  
  
-  });
+  console.log("--------------------------------------");
+  console.log("Title: " + JSON.parse(body).Title);
+  console.log("Year Released: " + JSON.parse(body).Year);
+  console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+  console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].value);
+  console.log("Country: " + JSON.parse(body).Country);
+  console.log("Language: " + JSON.parse(body).Language);
+  console.log("Plot Summary: " + JSON.parse(body).Plot);
+  console.log("Actors: " + JSON.parse(body).Actors);
+} else {
+    movieName = "Star wars"
+  searchOmdbAPI(search);
+}
+});
+}
 
 
 
-
-// var songSearch = "https://api.spotify.com/v1/searchq=name:" + search + "&artist,track";
-
-//
-
-
-
-
-
-
-
-
-// var bandsInTown = require('')
-
-
-// if (command == "concert-this") {
-// request("https://rest.bandsintwon.com/artist/" + search + "/events?app_id=codingbootcamp") {
-//   console.log()
-// }
-// }
-
-// function bandEventsCall() {
-//   bandsInTown.search({type: "artist", query: ""})
-// }
 
